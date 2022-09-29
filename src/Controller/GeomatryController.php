@@ -19,14 +19,22 @@ use Symfony\Component\Serializer\Serializer;
 
 class GeomatryController extends AbstractController
 {
+    private $encoders;
+    private $normalizers;
+    private $serializer;
+
+    public function __construct()
+    {
+        $this->encoders = [new XmlEncoder(), new JsonEncoder()];
+        $this->normalizers = [new ObjectNormalizer()];
+        $this->serializer = new Serializer($this->normalizers, $this->encoders);
+    }
     /**
      * @Route("[GET]/triangle/{a}/{b}/{c}", name="app_traingle")
      */
     public function triangle($a, $b, $c): JsonResponse
     {
-        $encoders = [new XmlEncoder(), new JsonEncoder()];
-        $normalizers = [new ObjectNormalizer()];
-        $serializer = new Serializer($normalizers, $encoders);
+
         $triangle = new Triangle();
         $triangle->setA($a)
             ->setType('triangle')
@@ -34,7 +42,7 @@ class GeomatryController extends AbstractController
             ->setC($c)
             ->setSurface($a, $b)
             ->setCircumference($a, $b, $c);
-        $serializedData = $serializer->serialize($triangle, 'json');
+        $serializedData = $this->serializer->serialize($triangle, 'json');
         return JsonResponse::fromJsonString($serializedData);
     }
 
@@ -43,15 +51,12 @@ class GeomatryController extends AbstractController
      */
     public function circle($radius): JsonResponse
     {
-        $encoders = [new XmlEncoder(), new JsonEncoder()];
-        $normalizers = [new ObjectNormalizer()];
-        $serializer = new Serializer($normalizers, $encoders);
         $circle = new Circle();
         $circle->setRadius($radius)
-            ->setTpye('Circle')
+            ->setType('Circle')
             ->setSurface($radius)
             ->setCircumference($radius);
-        $serializedData = $serializer->serialize($circle, 'json');
+        $serializedData = $this->serializer->serialize($circle, 'json');
         return JsonResponse::fromJsonString($serializedData);
     }
 

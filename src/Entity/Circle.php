@@ -20,7 +20,7 @@ class Circle
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $tpye;
+    private $type;
 
     /**
      * @ORM\Column(type="float")
@@ -42,14 +42,14 @@ class Circle
         return $this->id;
     }
 
-    public function getTpye(): ?string
+    public function getType(): ?string
     {
-        return $this->tpye;
+        return $this->type;
     }
 
-    public function setTpye(string $tpye): self
+    public function setType(string $type): self
     {
-        $this->tpye = $tpye;
+        $this->type = $type;
 
         return $this;
     }
